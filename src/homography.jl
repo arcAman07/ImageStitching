@@ -11,3 +11,8 @@ function Homography{T}() where {T}
     m = Matrix(sc, 3, 3)
     return Homography{T}(SMatrix{3,3,T,9}(m))
 end
+
+function Base.show(io::IO, mime::MIME"text/plain", h::DiffImages.Homography{K}) where {K}
+    println(io, "DiffImages.Homography{$K} with:")
+    show(io, mime, h.H)
+end
