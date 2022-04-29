@@ -1,5 +1,12 @@
-module ImageStitching
+using ImageCore,
+      Zygote,
+      ImageTransformations,
+      StaticArrays,
+      CoordinateTransformations,
+      Interpolations,
+      ChainRulesCore,
+      LinearAlgebra, 
+      Rotations
 
-greet() = print("Hello World!")
-
-end # module
+using Zygote: @adjoint
+using ChainRulesCore: NoTangent
