@@ -1,4 +1,4 @@
-
+module ImageStitching
 
 using ImageCore,
     Zygote,
