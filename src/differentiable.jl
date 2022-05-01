@@ -95,4 +95,4 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     return dst
 end
 
-@adjoint function 
+@adjoint function
