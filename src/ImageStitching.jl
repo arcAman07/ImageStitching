@@ -14,6 +14,9 @@ using Zygote: @adjoint
 using ChainRulesCore: NoTangent
 
 using Reexport
+using Base.Cartesian: @nloops
+@reexport using ImageCore
+using ImageCore.OffsetArrays
 
 include
 
