@@ -21,6 +21,8 @@ using ImageCore.OffsetArrays
 include("homography.jl")
 include("loader.jl")
 include("ransac.jl")
+include("merge.jl")
+include("utilities.jl")
 
 end
 
