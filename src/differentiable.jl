@@ -4,9 +4,6 @@ using ImageCore.MappedArrays: of_eltype
 
 export
     fdiff, fdiff!,
-    fdiv, fdiv!,
-    fgradient, fgradient!,
-    flaplacian, flaplacian!
 
 
 """
