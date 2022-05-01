@@ -3,7 +3,7 @@ using ImageCore
 using ImageCore.MappedArrays: of_eltype
 
 export
-    fdiff, fdiff!,
+    fdiff, fdiff!
 
 
 """
