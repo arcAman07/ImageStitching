@@ -55,4 +55,44 @@ fdiff(A::AbstractArray; kwargs...) = fdiff!(similar(A, maybe_floattype(eltype(A)
 The in-place version of [`fdiff`](@ref)
 """
 
+function fdiff!(dst::AbstractArray, src::AbstractArray;
+        dims=_fdiff_default_dims(src),
+        rev=false,
+        boundary::Symbol=:periodic)
+    isnothing(dims) && throw(UndefKeywordError(:dims))
+    axes(dst) == axes(src) || throw(ArgumentError("axes of all input arrays should be equal. Instead they are $(axes(dst)) and $(axes(src))."))
+    N = ndims(src)
+    1 <= dims <= N || throw(ArgumentError("dimension $dims out of range (1:$N)"))
+
+    src = of_eltype(maybe_floattype(eltype(dst)), src)
+    r = axes(src)
+    r0 = ntuple(i -> i == dims ? UnitRange(first(r[i]), last(r[i]) - 1) : UnitRange(r[i]), N)
+    r1 = ntuple(i -> i == dims ? UnitRange(first(r[i])+1, last(r[i])) : UnitRange(r[i]), N)
+
+    d0 = ntuple(i -> i == dims ? UnitRange(last(r[i]), last(r[i])) : UnitRange(r[i]), N)
+    d1 = ntuple(i -> i == dims ? UnitRange(first(r[i]), first(r[i])) : UnitRange(r[i]), N)
+
+    if rev
+        dst[r1...] .= view(src, r1...) .- view(src, r0...)
+        if boundary == :periodic
+            dst[d1...] .= view(src, d1...) .- view(src, d0...)
+        elseif boundary == :zero
+            dst[d1...] .= zero(eltype(dst))
+        else
+            throw(ArgumentError("Wrong boundary condition $boundary"))
+        end
+    else
+        dst[r0...] .= view(src, r1...) .- view(src, r0...)
+        if boundary == :periodic
+            dst[d0...] .= view(src, d1...) .- view(src, d0...)
+        elseif boundary == :zero
+            dst[d0...] .= zero(eltype(dst))
+        else
+            throw(ArgumentError("Wrong boundary condition $boundary"))
+        end
+    end
+
+    return dst
+end
+
 @adjoint function 
