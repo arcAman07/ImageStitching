@@ -18,5 +18,7 @@ using Base.Cartesian: @nloops
 @reexport using ImageCore
 using ImageCore.OffsetArrays
 
-include
+include("homography.jl")
+include("loader.jl")
+include("ransac.jl")
 
