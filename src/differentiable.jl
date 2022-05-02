@@ -1,4 +1,4 @@
-# Writing the adjoint for the fdiff function to make it differentiable( AD)
+# Writing the adjoint for the fdiff function to make it differentiable( AD )
 
 @adjoint function fdiff(A::AbstractArray{T,N}; kwargs...) where {T,N}
     e = eltype(A)
