@@ -94,7 +94,6 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     return dst
 end
 
-
 @adjoint function fdiff(A::AbstractArray{T,N}; kwargs...) where {T,N}
     e = eltype(A)
     y = fdiff!(similar(A, maybe_floattype(eltype(A))), A; kwargs...)
