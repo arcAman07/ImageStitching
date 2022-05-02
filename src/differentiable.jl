@@ -5,7 +5,6 @@ using ImageCore.MappedArrays: of_eltype
 export
     fdiff, fdiff!
 
-
 """
     fdiff(A::AbstractArray; dims::Int, rev=false, boundary=:periodic)
 A one-dimension finite difference operator on array `A`. Unlike `Base.diff`, this function doesn't
@@ -95,7 +94,16 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     return dst
 end
 
-function fdiff!(dst::AbstractArray, src::AbstractArray;
-        dims=_fdiff_default_dims(src),
-        rev=false,
-        boundary::Symbol=:periodic)
+
+@adjoint function fdiff(A::AbstractArray{T,N}; kwargs...) where {T,N}
+    e = eltype(A)
+    y = fdiff!(similar(A, maybe_floattype(eltype(A))), A; kwargs...)
+    final = similar(A,Tuple{eltype(A),eltype(A)})
+    function pullback(Δ)
+        for i in range(1,size(final)[1]), j in range(1,size(final)[2])
+            final[i,j] = (Δ,-Δ)
+        end
+    return final
+    end
+    return (y,pullback)
+end
