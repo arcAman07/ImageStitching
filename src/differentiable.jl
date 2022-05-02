@@ -95,4 +95,7 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     return dst
 end
 
-@adjoint function
+function fdiff!(dst::AbstractArray, src::AbstractArray;
+        dims=_fdiff_default_dims(src),
+        rev=false,
+        boundary::Symbol=:periodic)
