@@ -35,3 +35,24 @@ end
     return (y, pullback)
 end
 
+@adjoint function maximum_finite(A::AbstractArray{T,N}; kwargs...) where {T,N}
+    y = ImageBase.maximum_finite(identity, A; kwargs...)
+    final = zeros(eltype(A), size(A))
+    function pullback(Δ)
+        index = last(findall(x -> x == y, A))
+        final[index] = Δ
+        return (final,)
+    end
+    return (y, pullback)
+end
+
+@adjoint function minimum_finite(A::AbstractArray{T,N}; kwargs...) where {T,N}
+    y = ImageBase.minimum_finite(identity, A; kwargs...)
+    final = zeros(eltype(A), size(A))
+    function pullback(Δ)
+        index = first(findall(x -> x == y, A))
+        final[index] = Δ
+        return (final,)
+    end
+    return (y, pullback)
+end

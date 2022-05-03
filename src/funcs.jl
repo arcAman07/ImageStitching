@@ -55,9 +55,9 @@ The in-place version of [`fdiff`](@ref)
 """
 
 function fdiff!(dst::AbstractArray, src::AbstractArray;
-        dims=_fdiff_default_dims(src),
-        rev=false,
-        boundary::Symbol=:periodic)
+    dims=_fdiff_default_dims(src),
+    rev=false,
+    boundary::Symbol=:periodic)
     isnothing(dims) && throw(UndefKeywordError(:dims))
     axes(dst) == axes(src) || throw(ArgumentError("axes of all input arrays should be equal. Instead they are $(axes(dst)) and $(axes(src))."))
     N = ndims(src)
@@ -66,7 +66,7 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     src = of_eltype(maybe_floattype(eltype(dst)), src)
     r = axes(src)
     r0 = ntuple(i -> i == dims ? UnitRange(first(r[i]), last(r[i]) - 1) : UnitRange(r[i]), N)
-    r1 = ntuple(i -> i == dims ? UnitRange(first(r[i])+1, last(r[i])) : UnitRange(r[i]), N)
+    r1 = ntuple(i -> i == dims ? UnitRange(first(r[i]) + 1, last(r[i])) : UnitRange(r[i]), N)
 
     d0 = ntuple(i -> i == dims ? UnitRange(last(r[i]), last(r[i])) : UnitRange(r[i]), N)
     d1 = ntuple(i -> i == dims ? UnitRange(first(r[i]), first(r[i])) : UnitRange(r[i]), N)
@@ -92,4 +92,38 @@ function fdiff!(dst::AbstractArray, src::AbstractArray;
     end
 
     return dst
-end 
+end
+
+"""
+    meanfinite([f=identity], A; kwargs...)
+Compute `mean(f, A)` while ignoring any non-finite values.
+The supported `kwargs` are those of `sum(f, A; kwargs...)`.
+"""
+meanfinite(A; kwargs...) = meanfinite(identity, A; kwargs...)
+
+if Base.VERSION >= v"1.1"
+    function meanfinite(f, A; kwargs...)
+        s = sumfinite(f, A; kwargs...)
+        n = sum(IfElse(isfinite, x -> true, x -> false), A; kwargs...)   # TODO: replace with `Returns`
+        return s ./ n
+    end
+else
+    function meanfinite(f, A; kwargs...)
+        s = sumfinite(f, A; kwargs...)
+        n = sum(IfElse(isfinite, x -> true, x -> false).(A); kwargs...)
+        return s ./ n
+    end
+end
+
+"""
+    sumfinite([f=identity], A; kwargs...)
+Compute `sum(f, A)` while ignoring any non-finite values.
+The supported `kwargs` are those of `sum(f, A; kwargs...)`.
+"""
+sumfinite(A; kwargs...) = sumfinite(identity, A; kwargs...)
+
+if Base.VERSION >= v"1.1"
+    sumfinite(f, A; kwargs...) = sum(IfElse(isfinite, f, zero), A; kwargs...)
+else
+    sumfinite(f, A; kwargs...) = sum(IfElse(isfinite, f, zero).(A); kwargs...)
+end
