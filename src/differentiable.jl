@@ -20,3 +20,14 @@ end
     end
     return (y, pullback)
 end
+
+@adjoint function meanfinite(A::AbstractArray{T,N}; kwargs...) where {T,N}
+    y = ImageBase.meanfinite(identity, A; kwargs...)
+    final = similar(A, eltype(A))
+    function pullback(Δ)
+        fill!(final, Δ / length(A))
+        return (final,)
+    end
+    return (y, pullback)
+end
+
