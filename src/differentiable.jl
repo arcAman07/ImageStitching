@@ -23,6 +23,8 @@ end
     return (y, pullback)
 end
 
+# Writing the adjoint for the meanfinite function to make it differentiable( AD )
+
 @adjoint function meanfinite(A::AbstractArray{T,N}; kwargs...) where {T,N}
     y = ImageBase.meanfinite(identity, A; kwargs...)
     final = similar(A, eltype(A))
