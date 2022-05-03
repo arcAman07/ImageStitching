@@ -11,6 +11,8 @@ using ImageBase
     return (y, pullback)
 end
 
+# Writing the adjoint for the sumfinite function to make it differentiable( AD )
+
 @adjoint function sumfinite(A::AbstractArray{T,N}; kwargs...) where {T,N}
     y = ImageBase.sumfinite(identity, A; kwargs...)
     final = similar(A, eltype(A))
