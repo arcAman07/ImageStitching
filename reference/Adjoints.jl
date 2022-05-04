@@ -189,7 +189,7 @@ meanfinite(A; kwargs...) = meanfinite(identity, A; kwargs...)
 
 if Base.VERSION >= v"1.1"
     function meanfinite(f, A; kwargs...)
-        s = sumfinite(f, A; kwargs...)
+        s = ImageBase.sumfinite(f, A; kwargs...)
         n = sum(IfElse(isfinite, x->true, x->false), A; kwargs...)   # TODO: replace with `Returns`
         return s./n
     end
