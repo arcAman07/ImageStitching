@@ -48,6 +48,8 @@ end
     return (y, pullback)
 end
 
+#Writing the adjoint for the minimum_finite function to make it differentiable( AD )
+
 @adjoint function minimum_finite(A::AbstractArray{T,N}; kwargs...) where {T,N}
     y = ImageBase.minimum_finite(identity, A; kwargs...)
     final = zeros(eltype(A), size(A))
