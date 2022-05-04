@@ -272,7 +272,7 @@ zeros(eltype(A),size(A))
 end
 
 @adjoint function maximum_finite(A::AbstractArray{T,N}; kwargs...) where {T,N}
-    y = maximum_finite(identity, A; kwargs...)
+    y = ImageBase.maximum_finite(identity, A; kwargs...)
     final = zeros(eltype(A),size(A))
     function pullback(Δ)
         index = last(findall( x -> x == y, A ))
