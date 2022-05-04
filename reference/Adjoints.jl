@@ -262,7 +262,7 @@ findall(C .== 1)
 zeros(eltype(A),size(A))
 
 @adjoint function meanfinite(A::AbstractArray{T,N}; kwargs...) where {T,N}
-    y = sumfinite(identity, A; kwargs...)
+    y = ImageBase.sumfinite(identity, A; kwargs...)
     final = similar(A,eltype(A))
     function pullback(Δ)
         fill!(final,Δ/length(A))
