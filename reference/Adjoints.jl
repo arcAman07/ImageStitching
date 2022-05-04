@@ -283,7 +283,7 @@ end
 end
 
 @adjoint function minimum_finite(A::AbstractArray{T,N}; kwargs...) where {T,N}
-    y = minimum_finite(identity, A; kwargs...)
+    y = ImageBase.minimum_finite(identity, A; kwargs...)
     final = zeros(eltype(A),size(A))
     function pullback(Δ)
         index = first(findall( x -> x == y, A ))
