@@ -293,12 +293,5 @@ end
     return (y,pullback)
 end
 
-gradient(minimum_finite, C)
-
-e = gradient(maximum_finite, C)
-
-C
-
-e
 
 
